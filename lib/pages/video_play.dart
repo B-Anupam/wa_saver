@@ -225,6 +225,8 @@ import 'package:video_player/video_player.dart';
 import 'package:share/share.dart';
 import 'package:social_share/social_share.dart';
 import 'video_controller.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'package:flutter/services.dart';
 
 class PlayStatus extends StatefulWidget {
   final String videoFile;
@@ -337,6 +339,7 @@ class _PlayStatusState extends State<PlayStatus> {
         videoPlayerController:
             VideoPlayerController.file(File(widget.videoFile)),
         looping: true,
+        aspectRatio: 1,
         autoplay: true,
         videoSrc: widget.videoFile,
       ),
@@ -372,25 +375,31 @@ class _PlayStatusState extends State<PlayStatus> {
         padding: const EdgeInsets.only(bottom: 24.0),
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           RaisedButton.icon(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              elevation: 10,
+              color: Colors.green,
+              textColor: Colors.white,
+              padding: EdgeInsets.all(15.0),
               icon: Icon(Icons.file_download),
               onPressed: () async {
                 _onLoading(true, '');
 
                 final originalVideoFile = File(widget.videoFile);
-                final directory = await getExternalStorageDirectory();
-                print('directory: $directory');
-                if (!Directory('/storage/emulated/0/wa_status_saver')
-                    .existsSync()) {
-                  Directory('/storage/emulated/0/wa_status_saver')
-                      .createSync(recursive: true);
-                }
-                // final path = directory.path;
-                final curDate = DateTime.now().toString();
-                final newFileName =
-                    '/storage/emulated/0/wa_status_saver/VIDEO-$curDate.mp4';
-                print(newFileName);
-                await originalVideoFile.copy(newFileName);
-
+                // final directory = await getExternalStorageDirectory();
+                // print('directory: $directory');
+                // if (!Directory('/storage/emulated/0/wa_status_saver')
+                //     .existsSync()) {
+                //   Directory('/storage/emulated/0/wa_status_saver')
+                //       .createSync(recursive: true);
+                // }
+                // // final path = directory.path;
+                // final curDate = DateTime.now().toString();
+                // final newFileName =
+                //     '/storage/emulated/0/wa_status_saver/VIDEO-$curDate.mp4';
+                // print(newFileName);
+                // await originalVideoFile.copy(newFileName);
+                GallerySaver.saveVideo(originalVideoFile.path);
                 _onLoading(
                   false,
                   'If Video not available in gallery,you can find all videos at',

@@ -18,6 +18,7 @@ class _SendDirectState extends State<SendDirect> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green,
         title: const Text('WhatsApp Send Direct'),
       ),
       body: Center(
@@ -26,7 +27,21 @@ class _SendDirectState extends State<SendDirect> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Send Direct Message without saving contact'),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                'assets/images/sendmessage.png',
+                width: MediaQuery.of(context).size.width * 0.5,
+                height: MediaQuery.of(context).size.width * 0.35,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Text(
+              'Send Direct Message without saving contact',
+              style: TextStyle(
+                fontSize: 14,
+              ),
+            ),
             SizedBox(height: 40),
             IntlPhoneField(
               decoration: InputDecoration(

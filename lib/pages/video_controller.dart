@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
+import 'package:flutter/services.dart';
 
 class StatusVideo extends StatefulWidget {
   final VideoPlayerController videoPlayerController;
@@ -28,11 +29,17 @@ class _StatusVideoState extends State<StatusVideo> {
   void initState() {
     super.initState();
     _chewieController = ChewieController(
+        deviceOrientationsAfterFullScreen: [
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ],
         videoPlayerController: widget.videoPlayerController,
         autoInitialize: true,
         looping: widget.looping,
         allowFullScreen: true,
-        aspectRatio: 16 / 9,
+        aspectRatio: 1,
         autoPlay: true,
         errorBuilder: (context, errorMessage) {
           return Center(
@@ -53,7 +60,7 @@ class _StatusVideoState extends State<StatusVideo> {
             child: Hero(
               tag: widget.videoSrc,
               child: AspectRatio(
-                aspectRatio: 16 / 9,
+                aspectRatio: 1,
                 child: Chewie(
                   controller: _chewieController,
                 ),

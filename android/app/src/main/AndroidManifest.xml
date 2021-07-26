@@ -15,8 +15,8 @@
         
         android:requestLegacyExternalStorage="true"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="wasamplenew"
-        android:icon="@mipmap/ic_launcher">
+        android:label="WA Status Saver"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

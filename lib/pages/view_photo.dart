@@ -2,10 +2,10 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:share/share.dart';
 import 'package:social_share/social_share.dart';
+import 'package:flutter/services.dart';
 
 class ViewPhotos extends StatefulWidget {
   final String imgPath;
@@ -90,9 +90,17 @@ class _ViewPhotosState extends State<ViewPhotos> {
 
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeRight,
+    //   DeviceOrientation.landscapeLeft,
+    //   // DeviceOrientation.portraitUp,
+    //   // DeviceOrientation.portraitDown,
+    // ]);
     Uri myUri1 = Uri.parse(widget.imgPath);
     File originalImageFile = new File.fromUri(myUri1);
+
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
@@ -106,48 +114,44 @@ class _ViewPhotosState extends State<ViewPhotos> {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: Column(children: [
-          SizedBox(height: 20),
-          SizedBox(
-            child: Stack(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.center,
-                  child: Hero(
-                    tag: widget.imgPath,
-                    child: Image.file(
-                      File(widget.imgPath),
-                      fit: BoxFit.cover,
-                    ),
+        body: Padding(
+          padding: const EdgeInsets.all(0.0),
+          child: Stack(children: [
+            Center(
+              child: AspectRatio(
+                aspectRatio: 3 / 4,
+                child: Hero(
+                  tag: widget.imgPath,
+                  child: Image.file(
+                    File(widget.imgPath),
+                    fit: BoxFit.contain,
                   ),
                 ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-        ]),
-        bottomSheet: Padding(
-          padding: const EdgeInsets.only(bottom: 24.0),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            RaisedButton.icon(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
               ),
-              elevation: 10,
-              color: Colors.green,
-              textColor: Colors.white,
-              padding: EdgeInsets.all(15.0),
-              icon: Icon(Icons.file_download), //`Icon` to display
-              label: Text(
-                'Download',
-                style: TextStyle(fontSize: 15.0),
-              ), //`Text` to display
-              onPressed: () async {
-                _onLoading(true, "");
-                //File originalImageFile1 = File(widget.imgPath);
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 38),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      RaisedButton.icon(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        elevation: 10,
+                        color: Colors.green,
+                        textColor: Colors.white,
+                        padding: EdgeInsets.all(15.0),
+                        icon: Icon(Icons.file_download), //`Icon` to display
+                        label: Text(
+                          'Download',
+                          style: TextStyle(fontSize: 15.0),
+                        ), //`Text` to display
+                        onPressed: () async {
+                          _onLoading(true, "");
+                          //File originalImageFile1 = File(widget.imgPath);
 //
 //                Directory directory = await getExternalStorageDirectory();
 //                if(!Directory("${directory.path}/Downloaded Status/Images").existsSync()){
@@ -159,69 +163,75 @@ class _ViewPhotosState extends State<ViewPhotos> {
 //                print(newFileName);
 //                await originalImageFile1.copy(newFileName);
 
-                myUri = Uri.parse(widget.imgPath);
-                File originalImageFile = new File.fromUri(myUri);
-                Uint8List bytes;
-                await originalImageFile.readAsBytes().then((value) {
-                  bytes = Uint8List.fromList(value);
-                  print('reading of bytes is completed');
-                }).catchError((onError) {
-                  print('Exception Error while reading audio from path:' +
-                      onError.toString());
-                });
-                final result = await ImageGallerySaver.saveImage(
-                    Uint8List.fromList(bytes));
-                print(result);
-                _onLoading(false,
-                    "If Image not available in gallary\n\nYou can find all images at");
-              },
-            ),
-            RaisedButton.icon(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0)),
-                elevation: 10,
-                color: Colors.green,
-                textColor: Colors.white,
-                padding: EdgeInsets.all(15.0),
-                icon: Icon(Icons.repeat_rounded), //`Icon` to display
-                label: Text(
-                  'Repost',
-                  style: TextStyle(fontSize: 15.0),
-                ), //`Text` to display
-                onPressed: () async {
-                  try {
-                    await SocialShare.shareWhatsapp(
-                        '${originalImageFile.path}');
-                  } catch (e) {
-                    print('error: $e');
-                  }
-                }),
-            RaisedButton.icon(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0)),
-                elevation: 10,
-                splashColor: Colors.lightGreen,
-                color: Colors.green,
-                textColor: Colors.white,
-                padding: EdgeInsets.all(15.0),
-                onPressed: () async {
-                  try {
-                    await Share.shareFiles(['${originalImageFile.path}']);
-                  } catch (e) {
-                    print('error: $e');
-                  }
-                }
-                // onPressed: SimpleShare.share(uri: myUri1.toString()),
-                // _shareImage(originalImageFile.toString());
+                          myUri = Uri.parse(widget.imgPath);
+                          File originalImageFile = new File.fromUri(myUri);
+                          Uint8List bytes;
+                          await originalImageFile.readAsBytes().then((value) {
+                            bytes = Uint8List.fromList(value);
+                            print('reading of bytes is completed');
+                          }).catchError((onError) {
+                            print(
+                                'Exception Error while reading audio from path:' +
+                                    onError.toString());
+                          });
+                          final result = await ImageGallerySaver.saveImage(
+                              Uint8List.fromList(bytes));
+                          print(result);
+                          _onLoading(false,
+                              "If Image not available in gallary\n\nYou can find all images at");
+                        },
+                      ),
+                      RaisedButton.icon(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0)),
+                          elevation: 10,
+                          color: Colors.green,
+                          textColor: Colors.white,
+                          padding: EdgeInsets.all(15.0),
+                          icon: Icon(Icons.repeat_rounded), //`Icon` to display
+                          label: Text(
+                            'Repost',
+                            style: TextStyle(fontSize: 15.0),
+                          ), //`Text` to display
+                          onPressed: () async {
+                            try {
+                              await SocialShare.shareWhatsapp(
+                                  '${originalImageFile.path}');
+                            } catch (e) {
+                              print('error: $e');
+                            }
+                          }),
+                      RaisedButton.icon(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0)),
+                          elevation: 10,
+                          splashColor: Colors.lightGreen,
+                          color: Colors.green,
+                          textColor: Colors.white,
+                          padding: EdgeInsets.all(15.0),
+                          onPressed: () async {
+                            try {
+                              await Share.shareFiles(
+                                  ['${originalImageFile.path}']);
+                            } catch (e) {
+                              print('error: $e');
+                            }
+                          }
+                          // onPressed: SimpleShare.share(uri: myUri1.toString()),
+                          // _shareImage(originalImageFile.toString());
 
-                // Uri myUri1 = Uri.parse(widget.imgPath);
-                // File originalImageFile = new File.fromUri(myUri1);
-                ,
-                icon: Icon(Icons.share),
-                label: Text(
-                  "Share",
-                  style: TextStyle(color: Colors.white, fontSize: 15.0),
-                ))
+                          // Uri myUri1 = Uri.parse(widget.imgPath);
+                          // File originalImageFile = new File.fromUri(myUri1);
+                          ,
+                          icon: Icon(Icons.share),
+                          label: Text(
+                            "Share",
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 15.0),
+                          ))
+                    ]),
+              ),
+            ),
           ]),
         ),
       ),

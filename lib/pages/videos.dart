@@ -216,16 +216,21 @@ class VideoListViewState extends State<VideoListView> {
   @override
   Widget build(BuildContext context) {
     if (!Directory('${_videoDir.path}').existsSync()) {
-      return Card(
-        child: Column(
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.green,
+        ),
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Install WhatsApp\n',
-              style: TextStyle(fontSize: 18.0),
+            Center(
+              child: const Text(
+                'Install WhatsApp\n',
+                style: TextStyle(fontSize: 18.0),
+              ),
             ),
             const Text(
-              "Your Friend's Status Will Be Available Here",
+              "Status Will Be Available Here",
               style: TextStyle(fontSize: 18.0),
             ),
           ],
@@ -267,94 +272,105 @@ class _VideoGridState extends State<VideoGrid> {
 
     if (videoList != null) {
       if (videoList.length > 0) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            child: Container(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-              child: GridView.builder(
-                itemCount: videoList.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 1.0,
-                  mainAxisSpacing: 8.0,
-                ),
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PlayStatus(
-                            videoFile: videoList[index],
-                          ),
-                        ),
-                      ),
-                      child: ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(12)),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              // Where the linear gradient begins and ends
-                              begin: Alignment.bottomLeft,
-                              end: Alignment.topRight,
-                              stops: [0.1, 0.3, 0.5, 0.7, 0.9],
-                              colors: [
-                                Color(0xffb7d8cf),
-                                Color(0xffb7d8cf),
-                                Color(0xffb7d8cf),
-                                Color(0xffb7d8cf),
-                                Color(0xffb7d8cf),
-                              ],
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.green,
+          ),
+          body: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                child: GridView.builder(
+                  itemCount: videoList.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.0,
+                    mainAxisSpacing: 8.0,
+                  ),
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PlayStatus(
+                              videoFile: videoList[index],
                             ),
                           ),
-                          child: FutureBuilder(
-                              future: _getImage(videoList[index]),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.done) {
-                                  if (snapshot.hasData) {
+                        ),
+                        child: ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(12)),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                // Where the linear gradient begins and ends
+                                begin: Alignment.bottomLeft,
+                                end: Alignment.topRight,
+                                stops: [0.1, 0.3, 0.5, 0.7, 0.9],
+                                colors: [
+                                  Color(0xffb7d8cf),
+                                  Color(0xffb7d8cf),
+                                  Color(0xffb7d8cf),
+                                  Color(0xffb7d8cf),
+                                  Color(0xffb7d8cf),
+                                ],
+                              ),
+                            ),
+                            child: FutureBuilder(
+                                future: _getImage(videoList[index]),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.done) {
+                                    if (snapshot.hasData) {
+                                      return Hero(
+                                        tag: videoList[index],
+                                        child: Image.file(
+                                          File(snapshot.data),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      );
+                                    } else {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                  } else {
                                     return Hero(
                                       tag: videoList[index],
-                                      child: Image.file(
-                                        File(snapshot.data),
-                                        fit: BoxFit.cover,
+                                      child: SizedBox(
+                                        height: 280.0,
+                                        child: Image.asset(
+                                            'assets/images/video_loader.gif'),
                                       ),
                                     );
-                                  } else {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
-                                    );
                                   }
-                                } else {
-                                  return Hero(
-                                    tag: videoList[index],
-                                    child: SizedBox(
-                                      height: 280.0,
-                                      child: Image.asset(
-                                          'assets/images/video_loader.gif'),
-                                    ),
-                                  );
-                                }
-                              }),
-                          //new cod
+                                }),
+                            //new cod
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),
         );
       } else {
-        return const Center(
-          child: Text(
-            'Sorry, No Videos Found.',
-            style: TextStyle(fontSize: 18.0),
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.green,
+          ),
+          backgroundColor: Colors.white,
+          body: Center(
+            child: Text(
+              'Sorry, No Videos Found.',
+              style: TextStyle(fontSize: 28.0, color: Colors.black),
+            ),
           ),
         );
       }

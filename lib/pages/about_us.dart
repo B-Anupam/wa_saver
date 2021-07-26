@@ -59,7 +59,7 @@ class _AboutScreenState extends State<AboutScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text("Lorem Ipsum",
+                  Text("Hey, Thanks for Installing Status Saver.",
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.black,
